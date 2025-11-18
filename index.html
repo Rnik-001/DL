@@ -1,1 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>代理工具配置中心</title>
 
+    <!-- 图标字体 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
+            min-height: 100vh;
+            color: #fff;
+            overflow: auto;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部栏 */
+        .header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            background: rgba(30, 41, 59, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tg-channel {
+            background: linear-gradient(45deg, #0088cc, #00a2ff);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .title {
+            flex: 1;
+            text-align: center;
+            font-size: 24px;
+            background: linear-gradient(90deg, #60a5fa, #3b82f6, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        /* 主体布局 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* 侧边导航 */
+        .sidebar {
+            width: 300px;
+            background: rgba(30, 41, 59, 0.6);
+            padding: 25px 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tool-button {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            gap: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tool-button.active {
+            background: rgba(59, 130, 246, 0.25);
+            border-color: #3b82f6;
+            transform: scale(1.03);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .tool-icon {
+            font-size: 26px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* 右侧内容 */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        .content-header {
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .iframe-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .iframe-loaded {
+            opacity: 1 !important;
+        }
+
+        /* 加载遮罩 */
+        .loading-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(59, 130, 246, 0.3);
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.6);
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        /*****************************************
+        ------------- 手机端全屏适配 -------------
+        *****************************************/
+        @media (max-width: 768px) {
+            body {
+                height: 100dvh !important;
+                min-height: 100dvh !important;
+            }
+
+            .container {
+                height: 100dvh !important;
+            }
+
+            .main-content {
+                height: calc(100dvh - 70px - 45px) !important;
+                flex-direction: column;
+            }
+
+            /* 侧边栏变为横向滚动导航 */
+            .sidebar {
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                overflow-x: auto;
+                overflow-y: hidden;
+                white-space: nowrap;
+                padding: 15px;
+            }
+
+            .tool-button {
+                min-width: 260px;
+                display: inline-flex;
+            }
+
+            /* iframe 全屏显示 */
+            iframe {
+                height: 100% !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <!-- 顶部栏 -->
+    <div class="header">
+        <a href="https://t.me/iOSAWJ" class="tg-channel" target="_blank">
+            <i class="fab fa-telegram"></i> TG频道
+        </a>
+        <div class="title">代理工具配置中心</div>
+    </div>
+
+    <!-- 主体内容 -->
+    <div class="main-content">
+
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="tool-button active" data-tool="ios">
+                <i class="tool-icon fab fa-apple"></i>
+                <div>
+                    <div>iOS代理工具</div>
+                    <div style="font-size:13px;color:#94a3b8">iOS专用配置合集</div>
+                </div>
+            </div>
+
+            <div class="tool-button" data-tool="all">
+                <i class="tool-icon fas fa-globe"></i>
+                <div>
+                    <div>全平台代理工具</div>
+                    <div style="font-size:13px;color:#94a3b8">全平台支持</div>
+                </div>
+            </div>
+
+            <div class="tool-button" data-tool="sub">
+                <i class="tool-icon fas fa-exchange-alt"></i>
+                <div>
+                    <div>订阅转换工具</div>
+                    <div style="font-size:13px;color:#94a3b8">多格式互转</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content-area">
+            <div class="content-header">
+                <i class="fab fa-apple"></i>
+                <span>iOS代理工具配置合集</span>
+            </div>
+
+            <div class="iframe-container">
+                <div class="loading-overlay">
+                    <div class="loading-spinner"></div>
+                    <div>正在加载内容...</div>
+                </div>
+
+                <iframe src="https://rnik-001.github.io/03" onload="hideLoader(this)"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer">代理工具配置中心 © 2023</div>
+</div>
+
+<script>
+    // 隐藏加载动画
+    function hideLoader(iframe) {
+        const overlay = document.querySelector('.loading-overlay');
+        overlay.style.opacity = 0;
+        setTimeout(() => overlay.style.display = "none", 300);
+        iframe.classList.add("iframe-loaded");
+    }
+
+    // 侧边按钮切换
+    document.querySelectorAll('.tool-button').forEach(btn => {
+        btn.addEventListener('click', function () {
+
+            if (this.classList.contains("active")) return;
+
+            document.querySelectorAll('.tool-button').forEach(b =>
+                b.classList.remove("active")
+            );
+            this.classList.add("active");
+
+            // 点击弹跳动画
+            this.style.transform = "scale(0.9)";
+            setTimeout(() => { this.style.transform = "scale(1.05)"; },150);
+            setTimeout(() => { this.style.transform = "scale(1)"; },300);
+
+            const tool = this.dataset.tool;
+            const iframe = document.querySelector("iframe");
+            const titleIcon = document.querySelector(".content-header i");
+            const titleText = document.querySelector(".content-header span");
+            const overlay = document.querySelector(".loading-overlay");
+
+            overlay.style.display = "flex";
+            overlay.style.opacity = 1;
+            iframe.classList.remove("iframe-loaded");
+
+            if (tool === "ios") {
+                titleIcon.className = "fab fa-apple";
+                titleText.textContent = "iOS代理工具配置合集";
+                iframe.src = "https://rnik-001.github.io/03";
+            } else if (tool === "all") {
+                titleIcon.className = "fas fa-globe";
+                titleText.textContent = "全平台代理工具合集";
+                iframe.src = "https://rnik-001.github.io/02";
+            } else if (tool === "sub") {
+                titleIcon.className = "fas fa-exchange-alt";
+                titleText.textContent = "订阅转换工具";
+                iframe.src = "https://rnik-001.github.io/01";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
