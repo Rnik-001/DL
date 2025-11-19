@@ -21,7 +21,7 @@
             background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
             min-height: 100vh;
             color: #fff;
-            overflow: auto;
+            overflow: hidden;
         }
 
         .container {
@@ -40,6 +40,7 @@
             padding: 0 25px;
             background: rgba(30, 41, 59, 0.8);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
         }
 
         .tg-channel {
@@ -65,6 +66,21 @@
             font-weight: 700;
         }
 
+        /* 主页按钮 */
+        .home-btn {
+            background: linear-gradient(45deg, #10b981, #059669);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: none;
+            margin-left: 15px;
+        }
+
         /* 主体布局 */
         .main-content {
             flex: 1;
@@ -74,43 +90,90 @@
 
         /* 侧边导航 */
         .sidebar {
-            width: 300px;
+            width: 280px;
             background: rgba(30, 41, 59, 0.6);
-            padding: 25px 20px;
+            padding: 20px 15px;
             border-right: 1px solid rgba(255, 255, 255, 0.1);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 8px;
+            transition: all 0.3s ease;
         }
 
         .tool-button {
             background: rgba(30, 41, 59, 0.7);
-            padding: 20px;
-            border-radius: 15px;
+            padding: 12px 15px;
+            border-radius: 10px;
             display: flex;
-            gap: 15px;
+            align-items: center;
+            gap: 12px;
             cursor: pointer;
-            transition: 0.3s;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .tool-button:hover::before {
+            left: 100%;
+        }
+
+        .tool-button:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .tool-button.active {
             background: rgba(59, 130, 246, 0.25);
             border-color: #3b82f6;
-            transform: scale(1.03);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
         }
 
         .tool-icon {
-            font-size: 26px;
-            width: 48px;
-            height: 48px;
+            font-size: 18px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
+            border-radius: 8px;
             background: rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .tool-button.active .tool-icon {
+            background: rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+        }
+
+        .tool-info {
+            flex: 1;
+        }
+
+        .tool-name {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .tool-desc {
+            font-size: 12px;
+            color: #94a3b8;
         }
 
         /* 右侧内容 */
@@ -119,15 +182,24 @@
             display: flex;
             flex-direction: column;
             background: rgba(30, 41, 59, 0.3);
+            position: relative;
+            transition: all 0.3s ease;
         }
 
         .content-header {
-            padding: 20px;
+            padding: 18px 25px;
             background: rgba(30, 41, 59, 0.7);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             gap: 10px;
             align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .content-header i {
+            color: #3b82f6;
         }
 
         .iframe-container {
@@ -146,6 +218,37 @@
 
         .iframe-loaded {
             opacity: 1 !important;
+        }
+
+        /* 全屏模式 */
+        .fullscreen-mode .sidebar {
+            display: none;
+        }
+
+        .fullscreen-mode .content-area {
+            width: 100%;
+        }
+
+        /* 全屏切换按钮 */
+        .fullscreen-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .fullscreen-toggle:hover {
+            background: rgba(59, 130, 246, 0.3);
         }
 
         /* 加载遮罩 */
@@ -183,6 +286,7 @@
             background: rgba(15, 23, 42, 0.6);
             font-size: 14px;
             color: #94a3b8;
+            z-index: 100;
         }
 
         /*****************************************
@@ -215,13 +319,19 @@
             }
 
             .tool-button {
-                min-width: 260px;
+                min-width: 200px;
                 display: inline-flex;
+                margin-right: 10px;
             }
 
             /* iframe 全屏显示 */
             iframe {
                 height: 100% !important;
+            }
+
+            .fullscreen-toggle {
+                top: 10px;
+                right: 10px;
             }
         }
     </style>
@@ -235,7 +345,10 @@
         <a href="https://t.me/iOSAWJ" class="tg-channel" target="_blank">
             <i class="fab fa-telegram"></i> TG频道
         </a>
-        <div class="title">代理工具配置中心</div>
+        <button class="home-btn" id="homeBtn">
+            <i class="fas fa-home"></i> 首页
+        </button>
+        <div class="title">代理工具&配置中心</div>
     </div>
 
     <!-- 主体内容 -->
@@ -245,25 +358,25 @@
         <div class="sidebar">
             <div class="tool-button active" data-tool="ios">
                 <i class="tool-icon fab fa-apple"></i>
-                <div>
-                    <div>iOS代理工具</div>
-                    <div style="font-size:13px;color:#94a3b8">iOS专用配置合集</div>
+                <div class="tool-info">
+                    <div class="tool-name">iOS代理工具配置</div>
+                    <div class="tool-desc">iOS专用配置合集</div>
                 </div>
             </div>
 
             <div class="tool-button" data-tool="all">
                 <i class="tool-icon fas fa-globe"></i>
-                <div>
-                    <div>全平台代理工具</div>
-                    <div style="font-size:13px;color:#94a3b8">全平台支持</div>
+                <div class="tool-info">
+                    <div class="tool-name">全平台代理工具</div>
+                    <div class="tool-desc">跨平台支持</div>
                 </div>
             </div>
 
             <div class="tool-button" data-tool="sub">
                 <i class="tool-icon fas fa-exchange-alt"></i>
-                <div>
-                    <div>订阅转换工具</div>
-                    <div style="font-size:13px;color:#94a3b8">多格式互转</div>
+                <div class="tool-info">
+                    <div class="tool-name">订阅转换工具</div>
+                    <div class="tool-desc">多格式互转</div>
                 </div>
             </div>
         </div>
@@ -273,6 +386,10 @@
             <div class="content-header">
                 <i class="fab fa-apple"></i>
                 <span>iOS代理工具配置合集</span>
+            </div>
+
+            <div class="fullscreen-toggle" id="fullscreenToggle">
+                <i class="fas fa-expand"></i>
             </div>
 
             <div class="iframe-container">
@@ -287,7 +404,7 @@
     </div>
 
     <!-- 底部 -->
-    <div class="footer">代理工具配置中心 © 2025</div>
+    <div class="footer">代理工具&配置中心 © 2025</div>
 </div>
 
 <script>
@@ -302,18 +419,12 @@
     // 侧边按钮切换
     document.querySelectorAll('.tool-button').forEach(btn => {
         btn.addEventListener('click', function () {
-
             if (this.classList.contains("active")) return;
 
             document.querySelectorAll('.tool-button').forEach(b =>
                 b.classList.remove("active")
             );
             this.classList.add("active");
-
-            // 点击弹跳动画
-            this.style.transform = "scale(0.9)";
-            setTimeout(() => { this.style.transform = "scale(1.05)"; },150);
-            setTimeout(() => { this.style.transform = "scale(1)"; },300);
 
             const tool = this.dataset.tool;
             const iframe = document.querySelector("iframe");
@@ -325,20 +436,75 @@
             overlay.style.opacity = 1;
             iframe.classList.remove("iframe-loaded");
 
-            if (tool === "ios") {
-                titleIcon.className = "fab fa-apple";
-                titleText.textContent = "iOS代理工具配置合集";
-                iframe.src = "https://rnik-001.github.io/03";
-            } else if (tool === "all") {
-                titleIcon.className = "fas fa-globe";
-                titleText.textContent = "全平台代理工具合集";
-                iframe.src = "https://rnik-001.github.io/02";
-            } else if (tool === "sub") {
-                titleIcon.className = "fas fa-exchange-alt";
-                titleText.textContent = "订阅转换工具";
-                iframe.src = "https://rnik-001.github.io/01";
+            let title, icon, url;
+            switch (tool) {
+                case "ios":
+                    title = "iOS代理工具配置合集";
+                    icon = "fab fa-apple";
+                    url = "https://rnik-001.github.io/03";
+                    break;
+                case "all":
+                    title = "全平台代理工具合集";
+                    icon = "fas fa-globe";
+                    url = "https://rnik-001.github.io/02";
+                    break;
+                case "sub":
+                    title = "订阅转换工具";
+                    icon = "fas fa-exchange-alt";
+                    url = "https://rnik-001.github.io/01";
+                    break;
+                default:
+                    title = "代理工具配置中心";
+                    icon = "fas fa-tools";
+                    url = "https://rnik-001.github.io/03";
             }
+
+            titleIcon.className = icon;
+            titleText.textContent = title;
+            iframe.src = url;
+            
+            // 自动进入全屏模式
+            document.querySelector('.container').classList.add('fullscreen-mode');
+            document.getElementById('fullscreenToggle').innerHTML = '<i class="fas fa-compress"></i>';
         });
+    });
+
+    // 全屏切换
+    document.getElementById('fullscreenToggle').addEventListener('click', function() {
+        const container = document.querySelector('.container');
+        const isFullscreen = container.classList.contains('fullscreen-mode');
+        
+        if (isFullscreen) {
+            container.classList.remove('fullscreen-mode');
+            this.innerHTML = '<i class="fas fa-expand"></i>';
+        } else {
+            container.classList.add('fullscreen-mode');
+            this.innerHTML = '<i class="fas fa-compress"></i>';
+        }
+    });
+
+    // 首页按钮
+    document.getElementById('homeBtn').addEventListener('click', function() {
+        // 重置到iOS工具
+        document.querySelectorAll('.tool-button').forEach(b => b.classList.remove("active"));
+        document.querySelector('.tool-button[data-tool="ios"]').classList.add("active");
+        
+        const iframe = document.querySelector("iframe");
+        const titleIcon = document.querySelector(".content-header i");
+        const titleText = document.querySelector(".content-header span");
+        const overlay = document.querySelector(".loading-overlay");
+
+        overlay.style.display = "flex";
+        overlay.style.opacity = 1;
+        iframe.classList.remove("iframe-loaded");
+
+        titleIcon.className = "fab fa-apple";
+        titleText.textContent = "iOS代理工具配置合集";
+        iframe.src = "https://rnik-001.github.io/03";
+        
+        // 退出全屏模式
+        document.querySelector('.container').classList.remove('fullscreen-mode');
+        document.getElementById('fullscreenToggle').innerHTML = '<i class="fas fa-expand"></i>';
     });
 </script>
 
